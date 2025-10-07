@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/proofofputt/noonewillpay/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📚 Documentation
+    url: https://github.com/proofofputt/noonewillpay/blob/main/README.md
+    about: Read the documentation
+  - name: 🔐 Security Vulnerability
+    url: https://github.com/proofofputt/noonewillpay/security/advisories/new
+    about: Report a security vulnerability (private)

@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bitcoin-orange: #F7931A;
+  --ordinal-purple: #8B5CF6;
+  --runes-green: #10B981;
+}
+
+body {
+  @apply bg-gray-950 text-white font-mono;
+}
+
+.text-bitcoin {
+  color: var(--bitcoin-orange);
+}
+
+.text-ordinal {
+  color: var(--ordinal-purple);
+}
+
+.text-runes {
+  color: var(--runes-green);
+}
