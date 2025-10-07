@@ -6,21 +6,11 @@ import { Line, Bar } from 'recharts'
 export default function ReferralsAnalytics() {
   const [dateRange, setDateRange] = useState('7d')
 
-  const topReferrers = [
-    { email: 'alice@example.com', code: 'ALIC123456', referrals: 23, points: 2850, conversionRate: 87 },
-    { email: 'bob@example.com', code: 'BOB1234567', referrals: 18, points: 2150, conversionRate: 82 },
-    { email: 'carol@example.com', code: 'CARO123456', referrals: 15, points: 1920, conversionRate: 90 },
-  ]
+  // TODO: Fetch from API
+  const topReferrers: any[] = []
 
-  const referralGrowth = [
-    { date: '2024-01-01', referrals: 5, signups: 12 },
-    { date: '2024-01-02', referrals: 8, signups: 18 },
-    { date: '2024-01-03', referrals: 12, signups: 25 },
-    { date: '2024-01-04', referrals: 15, signups: 32 },
-    { date: '2024-01-05', referrals: 21, signups: 45 },
-    { date: '2024-01-06', referrals: 28, signups: 58 },
-    { date: '2024-01-07', referrals: 35, signups: 73 },
-  ]
+  // TODO: Fetch from API
+  const referralGrowth: any[] = []
 
   return (
     <div className="min-h-screen bg-gray-950 text-white p-8">
@@ -45,29 +35,29 @@ export default function ReferralsAnalytics() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <MetricCard
             title="Total Referrals"
-            value="247"
-            change="+23%"
+            value="0"
+            change="0%"
             positive
             icon="🔗"
           />
           <MetricCard
             title="Conversion Rate"
-            value="78%"
-            change="+5%"
+            value="0%"
+            change="0%"
             positive
             icon="✅"
           />
           <MetricCard
             title="Avg Points/User"
-            value="578"
-            change="+12%"
+            value="0"
+            change="0%"
             positive
             icon="⭐"
           />
           <MetricCard
             title="Total Allocation Pool"
-            value="142,850"
-            change="+18%"
+            value="0"
+            change="0%"
             positive
             icon="💰"
           />

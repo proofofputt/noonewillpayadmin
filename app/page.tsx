@@ -16,12 +16,12 @@ export default function AdminDashboard() {
   }, [])
 
   const fetchStats = async () => {
-    // Mock data - replace with actual API call
+    // TODO: Replace with actual API call to NeonDB
     setStats({
-      totalResponses: 247,
-      totalUsers: 189,
-      byRegion: { DC: 89, MD: 56, VA: 38, OTHER: 6 },
-      byDifficulty: { easy: 189, medium: 189, hard: 189 },
+      totalResponses: 0,
+      totalUsers: 0,
+      byRegion: { DC: 0, MD: 0, VA: 0, OTHER: 0 },
+      byDifficulty: { easy: 0, medium: 0, hard: 0 },
       recentSubmissions: []
     })
   }
@@ -85,9 +85,20 @@ export default function AdminDashboard() {
         <div className="bg-gray-900 p-6 rounded-lg border border-gray-800">
           <h2 className="text-2xl font-bold mb-4">Recent Submissions</h2>
           <div className="space-y-3">
-            <SubmissionRow email="user@example.com" region="DC" time="2 min ago" />
-            <SubmissionRow email="bitcoiner@proton.me" region="VA" time="15 min ago" />
-            <SubmissionRow email="hodler@gmail.com" region="MD" time="1 hour ago" />
+            {stats.recentSubmissions.length === 0 ? (
+              <div className="text-center text-gray-500 py-8">
+                No submissions yet
+              </div>
+            ) : (
+              stats.recentSubmissions.map((submission: any, index: number) => (
+                <SubmissionRow
+                  key={index}
+                  email={submission.email}
+                  region={submission.region}
+                  time={submission.time}
+                />
+              ))
+            )}
           </div>
         </div>
       </div>
