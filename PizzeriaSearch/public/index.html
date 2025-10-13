@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzeria Search - No One Will Pay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-btn {
+            padding: 12px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-info {
+            color: #333;
+        }
+
+        .results-info h2 {
+            margin-bottom: 5px;
+        }
+
+        .results-meta {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .export-btn {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .export-btn:hover {
+            background: #45a049;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .pizzeria-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .pizzeria-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .pizzeria-name {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .pizzeria-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 10px;
+        }
+
+        .badge-dedicated {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-delivery {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .pizzeria-info {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .pizzeria-info div {
+            margin: 5px 0;
+            font-size: 0.95em;
+        }
+
+        .pizzeria-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .stars {
+            color: #ffc107;
+        }
+
+        .pizzeria-distance {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #667eea;
+            margin-top: 10px;
+        }
+
+        .no-results {
+            text-align: center;
+            background: white;
+            border-radius: 15px;
+            padding: 60px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .no-results h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍕 Pizzeria Search</h1>
+            <p>Find the best pizza delivery restaurants near you</p>
+        </header>
+
+        <div class="search-box">
+            <form id="searchForm" class="search-form">
+                <div class="form-group">
+                    <label for="zipcode">ZIP Code</label>
+                    <input type="text" id="zipcode" name="zipcode" placeholder="Enter ZIP code" required maxlength="5" pattern="[0-9]{5}">
+                </div>
+
+                <div class="form-group">
+                    <label for="radius">Radius (miles)</label>
+                    <select id="radius" name="radius">
+                        <option value="5">5 miles</option>
+                        <option value="10" selected>10 miles</option>
+                        <option value="15">15 miles</option>
+                        <option value="20">20 miles</option>
+                        <option value="30">30 miles</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Searching for pizzerias...</p>
+        </div>
+
+        <div id="results" style="display: none;">
+            <div class="results-header">
+                <div class="results-info">
+                    <h2 id="resultsTitle">Results</h2>
+                    <div class="results-meta" id="resultsMeta"></div>
+                </div>
+                <button class="export-btn" onclick="exportResults()">Export CSV</button>
+            </div>
+
+            <div id="resultsGrid" class="results-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentResults = null;
+
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const zipcode = document.getElementById('zipcode').value;
+            const radius = document.getElementById('radius').value;
+
+            // Show loading, hide results
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+
+            try {
+                const response = await fetch('/api/search/zipcode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        zipcode,
+                        radius: parseInt(radius),
+                        includeNonDedicated: true,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentResults = data;
+                    displayResults(data);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error searching: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            const resultsGrid = document.getElementById('resultsGrid');
+            const resultsTitle = document.getElementById('resultsTitle');
+            const resultsMeta = document.getElementById('resultsMeta');
+
+            if (data.results.length === 0) {
+                resultsGrid.innerHTML = `
+                    <div class="no-results">
+                        <h3>No pizzerias found</h3>
+                        <p>Try expanding your search radius or different ZIP code</p>
+                    </div>
+                `;
+            } else {
+                resultsTitle.textContent = `Found ${data.count} Pizzerias`;
+                resultsMeta.innerHTML = `
+                    ${data.location.city}, ${data.location.state} ${data.location.zipcode} •
+                    ${data.radius_miles} mile radius •
+                    ${data.cached ? 'Cached' : 'Live'} •
+                    ${data.response_time_ms}ms
+                `;
+
+                resultsGrid.innerHTML = data.results.map(p => `
+                    <div class="pizzeria-card">
+                        <div class="pizzeria-name">${escapeHtml(p.name)}</div>
+
+                        ${p.is_dedicated_pizzeria ? '<span class="pizzeria-badge badge-dedicated">Pizzeria</span>' : ''}
+                        ${p.has_delivery ? '<span class="pizzeria-badge badge-delivery">Delivery</span>' : ''}
+
+                        ${p.rating ? `
+                            <div class="pizzeria-rating">
+                                <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5 - Math.round(p.rating))}</span>
+                                <span>${p.rating.toFixed(1)} (${p.review_count || 0} reviews)</span>
+                            </div>
+                        ` : ''}
+
+                        <div class="pizzeria-info">
+                            <div>📍 ${escapeHtml(p.address)}</div>
+                            ${p.phone ? `<div>📞 ${escapeHtml(p.phone)}</div>` : ''}
+                            ${p.website ? `<div>🌐 <a href="${escapeHtml(p.website)}" target="_blank">Website</a></div>` : ''}
+                        </div>
+
+                        <div class="pizzeria-distance">
+                            📏 ${p.distance_miles} miles away
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            resultsDiv.style.display = 'block';
+        }
+
+        function exportResults() {
+            if (!currentResults || !currentResults.results.length) return;
+
+            const csv = [
+                ['Name', 'Address', 'Phone', 'Website', 'Distance (miles)', 'Rating', 'Reviews', 'Delivery', 'Source'].join(','),
+                ...currentResults.results.map(p => [
+                    `"${(p.name || '').replace(/"/g, '""')}"`,
+                    `"${(p.address || '').replace(/"/g, '""')}"`,
+                    `"${(p.phone || '').replace(/"/g, '""')}"`,
+                    `"${(p.website || '').replace(/"/g, '""')}"`,
+                    p.distance_miles || '',
+                    p.rating || '',
+                    p.review_count || '',
+                    p.has_delivery ? 'Yes' : 'No',
+                    p.source || '',
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pizzerias_${currentResults.location.zipcode}_${Date.now()}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
